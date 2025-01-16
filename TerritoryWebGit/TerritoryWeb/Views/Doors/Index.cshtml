@@ -1,0 +1,673 @@
+﻿@model IEnumerable<TerritoryWeb.Models.Door>
+
+@{
+    ViewBag.Title = Resources.Menu.Breadcrum.Doors;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery.tablesorter.min.js"></script>
+<ol class="breadcrumb">
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Home, "Index", "Home")</li>
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Territories, "Index", "Territory")</li>
+    <li class="active">@Resources.Menu.Breadcrum.Doors</li>
+</ol>@Resources.Views.Doors.Index.CurrentTerritory:
+<div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        @ViewBag.TerritoryName<span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" role="menu">
+        @foreach (var item in (SelectList)ViewBag.TerritoryID)
+        {
+            <li>
+                @Html.ActionLink(item.Text, "Index", new { TerritoryID = item.Value })
+            </li>
+        }
+    </ul>
+</div>
+
+<br />
+<div class="row">
+    <div class="col-xs-4">
+        <a href="@Url.Action("Details", "Territory", new { id = @Request.QueryString["TerritoryID"] })" class="btn btn-default"><i class="fa fa-map-marker" aria-hidden="true"></i> @Resources.Views.Doors.Index.TerritoryDetailsBtn</a>&nbsp;
+    </div>
+    <div class="col-xs-4">
+        <a href="@Url.Action("Create", "Doors", new { TerritoryID = @Request.QueryString["TerritoryID"] })" class="btn btn-default"><i class="fa fa-plus-square" aria-hidden="true"></i> @Resources.Views.Doors.Index.AddDoorBtn</a>
+    </div>
+    <div class="col-xs-4">
+        <a href="@Url.Action("Index", "Doors", new { TerritoryID = @Request.QueryString["TerritoryID"], ProxSort = !ViewBag.ProxEnabled })" class="btn @(ViewBag.ProxEnabled ? " btn-warning" : " btn-default")"
+           title="@Resources.Views.Doors.Index.ProximitySortBtnTitle"><i class="fa fa-sort" aria-hidden="true"></i> @Resources.Views.Doors.Index.ProximitySortBtn</a>
+    </div>
+</div>
+<span class="text-danger">* @Resources.Views.Doors.Index.IndicatorMessage</span>
+<hr />
+<table class="table table-striped table-hover table-condensed tablesorter" id="maindoorlist">
+    <thead>
+        <tr style="cursor:pointer;">
+            <th nowrap>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th nowrap>
+                @Html.DisplayNameFor(model => model.Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apartment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comments)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th nowrap class="hidden-xs">
+                @Html.DisplayNameFor(model => model.Telephone)
+            </th>
+            <th class="hidden-xs">
+                @Html.DisplayNameFor(model => model.Language.Description)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="geolatrow clickrow" style="cursor:pointer;" data-id="@item.Id"
+                data-address="@item.Address" data-street="@item.Street" data-apartment="@item.Apartment" data-languageid="@item.LanguageID" data-comments="@item.Comments"
+                data-postalcode="@item.PostalCode" data-name="@item.Name" data-telephone="@item.Telephone" data-codeid="@((item.DoorCode != null) ? item.DoorCode.Id.ToString() : "")" data-geolat="@item.GeoLat" data-geolong="@item.GeoLong">
+                <td nowrap id="tblAddress">
+                    @Html.DisplayTextFor(modelItem => item.Address)
+                </td>
+                <td nowrap id="tblStreet">
+                    @Html.DisplayFor(modelItem => item.Street)
+                </td>
+                <td id="tblApartment">
+                    @Html.DisplayFor(modelItem => item.Apartment)
+                </td>
+                <td id="tblComments">
+                    @Html.DisplayFor(modelItem => item.Comments)
+                </td>
+                <td id="tblName">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td nowrap id="tblTelephone" class="hidden-xs">
+                    @Html.DisplayFor(modelItem => item.Telephone)
+                </td>
+                <td id="tblDescription" class="hidden-xs">
+                    @Html.DisplayFor(modelItem => item.Language.Description)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="myDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">@Resources.Views.Doors.Index.DeleteModalTitle</h4>
+            </div>
+            <div class="modal-body">
+                @Resources.Views.Doors.Index.DeleteModalDescription: <span id="deletemodaldoorname"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="modaldeletebtn">@Resources.Common.Delete</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Resources.Common.Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="modal-title"><span id="myEditModalLabel"></span></h4>
+                    </div>
+                    <div class="col-md-6">
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="mapSection" class="collapse">
+                            <h4>@Resources.Views.Doors.Index.MapTitle</h4>
+                            <hr />
+                            <div id="map"></div>
+                            <div id="verAddressDisp"></div>
+                        </div><br />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3"><button type="button" class="btn btn-default" id="modalpreviousbtn"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> @Resources.Views.Doors.Index.ModifyModalPreviousBtn</button></div>
+                    <div class="col-xs-6">
+                        <button type="button" class="btn btn-default" id="showmaptogglebtn"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> @Resources.Views.Doors.Index.ModifyModalShowMapBtn</button>
+                    </div>
+                    <div class="col-xs-3"><button type="button" class="btn btn-default pull-right" id="modalnextbtn">@Resources.Views.Doors.Index.ModifyModalNextBtn <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></button></div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="mymodaleditform">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.FirstOrDefault().Id)
+                    @Html.HiddenFor(model => model.FirstOrDefault().GeoLat)
+                    @Html.HiddenFor(model => model.FirstOrDefault().GeoLong)
+                    @Html.HiddenFor(model => model.FirstOrDefault().TerritoryID)
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-2">
+                                @Html.LabelFor(model => model.FirstOrDefault().Address)
+                                @*<input type="text" class="form-control" id="AddressField">*@
+                                @Html.TextBoxFor(model => model.FirstOrDefault().Address, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.FirstOrDefault().Address)
+                            </div>
+                            <div class="col-md-8">
+                                @Html.LabelFor(model => model.FirstOrDefault().Street)
+                                @Html.TextBoxFor(model => model.FirstOrDefault().Street, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.FirstOrDefault().Street)
+                            </div>
+                            <div class="col-md-2">
+                                @Html.LabelFor(model => model.FirstOrDefault().Apartment)
+                                @Html.TextBoxFor(model => model.FirstOrDefault().Apartment, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.FirstOrDefault().Apartment)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.FirstOrDefault().LanguageID)
+                                @Html.DropDownListFor(model => model.FirstOrDefault().LanguageID, (List<SelectListItem>)ViewBag.languages, "", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.FirstOrDefault().LanguageID)
+                            </div>
+                            <div class="col-md-7">
+                                @Html.LabelFor(model => model.FirstOrDefault().Comments)
+                                @Html.TextBoxFor(model => model.FirstOrDefault().Comments, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.FirstOrDefault().Comments)
+                            </div>
+                            <div class="col-md-2">
+                                @Html.LabelFor(model => model.FirstOrDefault().PostalCode)
+                                @Html.TextBoxFor(model => model.FirstOrDefault().PostalCode, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.FirstOrDefault().PostalCode)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.FirstOrDefault().Name)
+                                @Html.TextBoxFor(model => model.FirstOrDefault().Name, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.FirstOrDefault().Name)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.FirstOrDefault().Telephone)
+                                @Html.TextBoxFor(model => model.FirstOrDefault().Telephone, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.FirstOrDefault().Telephone)
+                            </div>
+                            <div class="col-md-5">
+                                @Html.LabelFor(model => model.FirstOrDefault().CodeID)
+                                @Html.DropDownListFor(model => model.FirstOrDefault().CodeID, (List<SelectListItem>)ViewBag.doorcodes, "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-danger pull-left" id="modaldoordeletebtn"><i class="fa fa-trash-o" aria-hidden="true"></i> @Resources.Views.Doors.Index.ModifyModalDeleteDoorBtn</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-success pull-right" id="formmodifysubmit" data-loading-text="Saving..."><i class="fa fa-floppy-o" aria-hidden="true"></i> @Resources.Views.Doors.Index.ModifyModalSaveChanges</button>
+                        <div class="alert collapse" id="savealert">@Resources.Views.Doors.Index.ModifyModalChangeSavedMsg</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#maindoorlist").tablesorter();
+
+        //Load the Coordinates
+        loadTerritoryCoords();
+    });
+
+    //When user clicks the table
+    $(".clickrow").click(function () {
+        selectRow($(this));
+    });
+
+    //$(window).on("swipeleft", function () {
+    //    alert('swipeleft');
+    //    if ($("#myEditModal").is(':visible')) {
+
+    //        nextRow();
+    //    }
+    //});
+
+    //$(window).on("swiperight", function () {
+    //    if ($("#myEditModal").is(':visible')) {
+    //        previousRow();
+    //    }
+    //});
+
+    //$("#myEditModal").find(".modal-footer").wipetouch({
+    //    wipeLeft: function (result) {
+    //        nextRow();
+    //    },
+    //    wipeRight: function (result) {
+    //        previousRow();
+    //    }
+    //});
+
+    $("#modalnextbtn").click(function () {
+        nextRow();
+    });
+
+    $("#modalpreviousbtn").click(function () {
+        previousRow();
+    });
+
+
+    $('#myEditModal').on('hidden.bs.modal', function (e) {
+        closeModal();
+    })
+
+    $("#showmaptogglebtn").click(function () {
+        //Toggle variable
+        ismapshown = !ismapshown;
+
+        //if true, show map
+        if (ismapshown) {
+            $("#mapSection").show();
+            showMap(currentRow);
+        } else {
+            $("#mapSection").hide();
+        }
+    });
+
+    //on Form text change
+    $("#Address, #Street, #PostalCode").change(function () {
+        if (ismapshown) {
+            VerifyAddress();
+        }
+    });
+
+    $("#mymodaleditform :input").change(function () {
+        if ($("#myEditModal").is(':visible')) {
+            //Enable save button
+            $("#formmodifysubmit").prop("disabled", false);
+        }
+    });
+
+    //On Form submit
+    $("#formmodifysubmit").click(function () {
+        submitForm();
+    });
+
+    $("#modaldoordeletebtn").click(function () {
+        //alert('test');
+        $("#myEditModal").modal('hide');
+        $("#myDeleteModal").modal('show');
+    });
+
+
+    //On Delete
+    $("#modaldeletebtn").click(function (event) {
+        event.preventDefault();
+
+        //Json call
+        var url = "@Url.Action("DeleteConfirmedJson", "Doors")/" + $("#Id").val();
+        var jqxhr = $.getJSON(url, function () {
+            $("#myDeleteModal").modal('hide');
+            location.reload();
+        }).error(function (jqXHR, textStatus, errorThrown) { /* assign handler */
+            alert(jqXHR.responseText);
+        });
+    });
+
+
+    //Row Navigation
+    var currentRow;
+    var mapheight = 350;
+    var ismapshown = false;
+    var map;
+    var markers = {};
+    var hullPoints = [];
+    var recordsChanged = false;
+    var polyline;
+
+    function selectRow($row) {
+        if ($row.data("address") != null) {
+            currentRow = $row;
+            $("#myEditModalLabel").text("Modify Address Information");
+            $row.addClass('info').siblings().removeClass('info');
+            setModalFields(currentRow);
+            $("#myEditModal").modal('show');
+
+            //Scroll to element
+            $('html, body').animate().stop().animate({
+                scrollTop: currentRow.offset().top - ($(window).height() / 2)
+            }, 500);
+        }
+    }
+
+    function nextRow() {
+        selectRow(currentRow.closest('tr').next('tr'));
+    }
+
+    function previousRow() {
+        selectRow(currentRow.closest('tr').prev('tr'));
+    }
+
+    function setModalFields($row) {
+        $("#Id").val($row.data("id"));
+        $("#GeoLat").val($row.data("geolat"));
+        $("#GeoLong").val($row.data("geolong"));
+        $("#Address").val($row.data("address"));
+        $("#Street").val($row.data("street"));
+        $("#Apartment").val($row.data("apartment"));
+        $("#LanguageID").val($row.data("languageid")).change();
+        $("#Comments").val($row.data("comments"));
+        $("#PostalCode").val($row.data("postalcode"));
+        $("#Name").val($row.data("name"));
+        $("#Telephone").val($row.data("telephone"));
+        $("#CodeID").val($row.data("codeid")).change();
+
+        //Disable save button
+        $("#formmodifysubmit").prop("disabled", true);
+
+        //If map is shown, call function
+        if (ismapshown) {
+            showMap();
+        }
+    }
+
+    function setTableFields($row) {
+        //Set data fields
+        $row.data("geolat", $("#GeoLat").val());
+        $row.data("geolong", $("#GeoLong").val());
+        $row.data("address", $("#Address").val());
+        $row.data("street", $("#Street").val());
+        $row.data("apartment", $("#Apartment").val());
+        $row.data("comments", $("#Comments").val());
+        $row.data("postalcode", $("#PostalCode").val());
+        $row.data("name", $("#Name").val());
+        $row.data("telephone", $("#Telephone").val());
+
+        $row.data("codeid", $("#CodeID option:selected").val());
+        $row.data("languageid", $("#LanguageID option:selected").val());
+
+        //Set table fields
+        $row.find("#tblAddress").text($("#Address").val());
+        $row.find("#tblStreet").text($("#Street").val());
+        $row.find("#tblApartment").text($("#Apartment").val());
+        $row.find("#tblComments").text($("#Comments").val());
+        $row.find("#tblName").text($("#Name").val());
+        $row.find("#tblTelephone").text($("#Telephone").val());
+        $row.find("#tblDescription").text($("#LanguageID option:selected").text());
+    }
+
+
+    function loadTerritoryCoords() {
+        //Get Coordinates
+        var url = "@Url.Action("GetTerritoryCord", "Territory")/?TerritoryId=@Request.QueryString["TerritoryID"]";
+        var jqxhr = $.getJSON(url, function (data) {
+            $.each(data, function (key, val) {
+                switch (key) {
+                    case "HullCoordinates":
+                        {
+                            //Loop through collection
+                            $.each(val, function (objKey, Latlongval) {
+                                var latLng = new google.maps.LatLng(Latlongval.X, Latlongval.Y);
+                                hullPoints.push(latLng);
+                            });
+                            break;
+                        }
+                    case "DoorCoordinates":
+                        {
+                            //Loop through collection
+                            $.each(val, function (objKey, DoorCord) {
+                                var DoorID = DoorCord.DoorID;
+                                var Address = DoorCord.Address;
+                                var latLng = new google.maps.LatLng(DoorCord.Coordinates.X, DoorCord.Coordinates.Y);
+                                // Creating a marker and putting it on the map
+                                var marker = new google.maps.Marker({
+                                    position: latLng,
+                                    title: Address,
+                                    map: map
+                                });
+
+                                marker.addListener('click', function () {
+                                    markerClicked(DoorID);
+                                });
+
+                                markers[DoorID] = marker;
+                            });
+                            break;
+                        }
+                }
+            });
+
+            $(".geolatrow").each(function (key, val) {
+                var row = $(this);
+                var lat = row.data("geolat").replace(",", ".");
+                var lng = row.data("geolong").replace(",", ".");
+
+                //See if it's not inside bounds
+                if (!isPointInPoly([lng, lat], hullPoints)) {
+                    row.addClass("danger");
+                }
+            });
+        });
+    }
+
+    function isPointInPoly(point, vs) {
+        var x = point[0], y = point[1];
+
+        var inside = false;
+        for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+            var xi = vs[i].lng(), yi = vs[i].lat();
+            var xj = vs[j].lng(), yj = vs[j].lat();
+
+            var intersect = ((yi > y) != (yj > y))
+                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+
+        return inside;
+    }
+
+    function showMap() {
+        if (map == null) {
+            initMap();
+        }
+
+        //var latLng = new google.maps.LatLng($("#GeoLat").val(), $("#GeoLong").val());
+        selectMarker($("#Id").val());
+    }
+
+    function initMap() {
+        //set height
+        $("#map").height(mapheight);
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 17,
+            fullscreenControl: true
+        });
+
+        //Add the coordinates
+        polyline = new google.maps.Polygon({
+            map: map,
+            paths: hullPoints,
+            fillColor: "#FF0000",
+            strokeWidth: 2,
+            fillOpacity: 0.1,
+            strokeColor: "#0000FF",
+            strokeOpacity: 0.5
+        });
+
+        setMapOnAll(map);
+    }
+
+    function VerifyAddress() {
+
+        if ($("#Address").val() == "" || $("#Street").val() == "") {
+            return;
+        }
+
+        var tmpadd = $("#Address").val() + " " + $("#Street").val();
+        var zip = ($("#PostalCode").val() == "") ? "@ViewBag.City" : $("#PostalCode").val();
+
+        var address = tmpadd + " " + zip;
+
+        if (map == null) {
+            initMap();
+        } else {
+            deleteMarkers();
+            geocodeAddress(address, map);
+        }
+
+    }
+
+    function geocodeAddress(address, resultsMap) {
+        var geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                resultsMap.setCenter(results[0].geometry.location);
+                addMarker(results[0].geometry.location);
+                $("#GeoLat").val(map.getCenter().lat());
+                $("#GeoLong").val(map.getCenter().lng());
+                resultsMap.setZoom(17);
+
+                var errmsg = "";
+                try {
+                    //Check boundary
+                    if (google.maps.geometry.poly.containsLocation(results[0].geometry.location, polyline)) {
+                        errmsg = "";
+                        //$("#formmodifysubmit").prop("disabled", false);
+
+                        //Set Zipcode
+                        $("#PostalCode").val(results[0].address_components[6].short_name);
+
+                    }
+                    else {
+                        errmsg = "<br /><div class=\"alert alert-danger\" role=\"alert\"><b>ERROR:</b> @Resources.Views.Doors.Index.GeoCodeError1</div>";
+                        //$("#formmodifysubmit").prop("disabled", true);
+                    }
+                } catch (e) {
+                    errmsg = "<br /><div class=\"alert alert-danger\" role=\"alert\"><b>ERROR:</b> @Resources.Views.Doors.Index.GeoCodeError2</div>";
+                }
+
+
+                //Display Address
+                $("#verAddressDisp").html("<b>@Resources.Views.Doors.Index.GeoCodeMsg1:</b> " + results[0].formatted_address + errmsg);
+
+            } else {
+                $("#verAddressDisp").html("<b>ERROR:</b> @Resources.Views.Doors.Index.GeoCodeError3: " + status + "<br />@Resources.Views.Doors.Index.GeoCodeError4");
+                //alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    }
+
+    // Adds a marker to the map and push to the array.
+    function addMarker(location) {
+        var marker = new google.maps.Marker({
+            position: location,
+            map: map
+        });
+        markers[0] = marker;
+        map.setCenter(location);
+        map.setZoom(17);
+    }
+
+    // Sets the map on all markers in the array.
+    function setMapOnAll(map) {
+        Object.keys(markers).forEach(function (key) {
+            markers[key].setMap(map);
+        });
+    }
+
+    // Removes the markers from the map, but keeps them in the array.
+    function clearMarkers() {
+        setMapOnAll(null);
+    }
+
+    // Shows any markers currently in the array.
+    function showMarkers() {
+        setMapOnAll(map);
+    }
+
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers() {
+        clearMarkers();
+        markers = [];
+    }
+
+    function selectMarker(DoorID) {
+        Object.keys(markers).forEach(function (key) {
+            markers[key].setAnimation(null);
+        });
+        markers[DoorID].setAnimation(google.maps.Animation.BOUNCE);
+
+        map.panTo(markers[DoorID].getPosition());
+        map.setZoom(17);
+    }
+
+    function markerClicked(DoorID) {
+        if (DoorID != null) {
+            selectMarker(DoorID);
+            selectRow($('*[data-id="' + DoorID + '"]'));
+        }
+    }
+
+
+    function submitForm() {
+        var form = $("#mymodaleditform");
+        $("#formmodifysubmit").button('loading');
+        $("#savealert").text("Saving changes...");
+        $("#savealert").addClass("alert-info").show();
+        //Save Edit
+        $.post(
+            "@Url.Action("InlineEdit")",
+            form.serialize(),
+            function (data) {
+                if (data == "OK: Record Updated.") {
+                    recordsChanged = true;
+                    setTableFields(currentRow);
+                    $("#formmodifysubmit").button('reset');
+                    //Disable save button
+                    $("#savealert").removeClass("alert-info").text("@Resources.Views.Doors.Index.ModifyModalChangeSavedMsg").addClass("alert-success").fadeOut(2000);
+                    $("#formmodifysubmit").prop("disabled", true);
+                }
+
+            }).fail(function (msg) {
+                alert(msg.responseText);
+                $("#formmodifysubmit").button('reset');
+                $("#savealert").removeClass("alert-info").text("@Resources.Views.Doors.Index.ModifyModalChangeSavedErrMsg").addClass("alert-danger").fadeOut(2000);
+
+            });
+    }
+
+    function closeModal() {
+        currentRow.removeClass('info').siblings().removeClass('info');
+        if (recordsChanged) {
+            location.reload();
+        }
+
+    }
+</script>
+<script src="~/Scripts/jquery.mobile.custom.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnFyc29RtN2hda5KjuK4queRlRtN3HIYE&language=@TerritoryWeb.Common.Properties.Culture" async defer></script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

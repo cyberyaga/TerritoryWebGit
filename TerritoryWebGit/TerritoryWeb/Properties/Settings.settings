@@ -1,0 +1,36 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TerritoryWeb.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="GoogleAPIKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="ApplicationEmailAddress" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">notifications@myterritoryweb.com</Value>
+    </Setting>
+    <Setting Name="ApplicationEmailPWD" Type="System.String" Scope="Application">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="ApplicationEmailHost" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">mail.myterritoryweb.com</Value>
+    </Setting>
+    <Setting Name="ApplicationEmailHostPort" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">8889</Value>
+    </Setting>
+    <Setting Name="ApplicationEmailSSLEnabled" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SMSAccountSID" Type="System.String" Scope="Application">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="SMSAuthToken" Type="System.String" Scope="Application">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="SMSPhoneNumber" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">(484) 555-1212</Value>
+    </Setting>
+    <Setting Name="btlyToken" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">R_</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

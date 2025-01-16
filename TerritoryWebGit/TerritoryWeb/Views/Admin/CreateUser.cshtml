@@ -1,0 +1,188 @@
+﻿@using TerritoryWeb.Models
+@model TerritoryWeb.Models.CreatePublisherViewModel
+
+@{
+    ViewBag.Title = "CreateUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<ol class="breadcrumb">
+    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <li>@Html.ActionLink("Admin Page", "Index", "Admin")</li>
+    <li>@Html.ActionLink("Manage Users", "ManageUsers", "Admin")</li>
+    <li class="active">Create User</li>
+</ol>
+<h2>Create User</h2>
+<hr />
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "createuserform" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" id="EmailGrp">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control login-group" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Address1, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Address1, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Address1, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Address2, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Address2, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Address2, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="PhoneNumberGrp">
+                        @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group collapse">
+                        @Html.LabelFor(model => model.CellPhone, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.CellPhone, new { htmlAttributes = new { @class = "form-control login-group" } })
+                        @Html.ValidationMessageFor(model => model.CellPhone, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CongregationID, new { @class = "control-label col-md-2" })
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
+                            @Html.DropDownListFor(model => model.CongregationID, (SelectList)ViewBag.Congregations, new { @class = "form-control " })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.CongregationID, (SelectList)ViewBag.Congregations, new { @class = "form-control ", disabled = "disabled" })
+                        }
+                        @Html.ValidationMessageFor(model => model.CongregationID)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-default" id="submitbtn" />
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="alert alert-danger collapse" role="alert" id="warningmsg"><b>Validation Error:</b> You need to specify either an email address or a cellphone number, to validate the account created.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Roles</div>
+                <div class="panel-body">
+                    <div class="btn-group" data-toggle="buttons">
+                        @foreach (var item in (List<AspNetRole>)ViewBag.Roles)
+                        {
+                            <label class="btn btn-default @(item.Name == "ReadOnly" ? "active" : "")">
+                                @Html.RadioButton("Permissions", item.Name, item.Name == "ReadOnly")
+                                @item.Name
+                            </label>
+                        }
+                    </div>
+                    <br /><br />
+                    Description:
+                    <ul>
+                        <li>Admin - Manages Users, is able to create and delete territories.</li>
+                        <li>Manager - Able to Create and Delete Territories.</li>
+                        <li>Editor - Able to edit door information.</li>
+                        <li>ReadOnly - Only allowed to view data. Can't modify.</li>
+                    </ul>
+                </div>
+            </div>
+            <hr />
+            <div class="panel panel-default">
+                <div class="panel-heading">Restrictions</div>
+                <div class="panel-body">
+                    <div class="btn-group" data-toggle="buttons">
+                        @foreach (var item in (List<PublisherType>)ViewBag.PublisherTypes)
+                        {
+                            <label class="btn btn-default @(item.Description == "Publisher" ? "active" : "")">
+                                @Html.RadioButton("PublisherType", item.Description, item.Description == "Publisher")
+                                @item.Description
+                            </label>
+                        }
+                    </div>
+                    <br /><br />
+                    Description:
+                    <ul>
+                        <li>Publisher - View common data. Can't receive territory.</li>
+                        <li>Pioneer - View common data. Allowed to be assigned territory.</li>
+                        <li>Elder - View Restricted data. Allowed to be assigned territory.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(function () {
+       
+        
+    });
+
+    $("#submitbtn").click(function (event) {
+        if ($("#Email").val() == "" && $("#PhoneNumber").val() == "") {
+            event.preventDefault();
+            $("#warningmsg").show();
+            $("#EmailGrp").addClass("has-error");
+            $("#PhoneNumberGrp").addClass("has-error");
+        } else {
+            $("#warningmsg").hide();
+            $("#EmailGrp").removeClass("has-error");
+            $("#PhoneNumberGrp").removeClass("has-error");
+        }
+
+    });
+
+    $("#Email, #PhoneNumber").on("input", function () {
+        $("#warningmsg").hide();
+        $("#EmailGrp").removeClass("has-error");
+        $("#PhoneNumberGrp").removeClass("has-error");
+    });
+
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

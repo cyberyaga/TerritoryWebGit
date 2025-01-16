@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "All Territories View";
+}
+<style>
+    #map {
+        height: 800px;
+    }
+</style>
+<ol class="breadcrumb">
+    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <li>@Html.ActionLink("Territories", "Index", "Territory")</li>
+    <li class="active">View Territories</li>
+</ol>
+<h2>View Territories</h2>
+<div class="row">
+    <div class="col-md-12">
+        <div id="map"></div>
+    </div>
+</div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnFyc29RtN2hda5KjuK4queRlRtN3HIYE&callback=initMap&language=@TerritoryWeb.Common.Properties.Culture" async defer></script>
+<script src="~/Scripts/maplabel-compiled.js"></script>
+
+<script>
+
+    var map;
+    var hullPoints = [];
+    var polyline;
+    var markerTimeout = 0;
+    var markers = [];
+
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 17,
+            fullscreenControl: true
+        });
+
+        var terID = 0;
+        var terName = "";
+        var url = "@Url.Action("GetTerritories", "Territory")";
+        var jqxhr = $.getJSON(url, function (data) {
+            $.each(data, function (mkey, mval) {
+                $.each(mval, function (key, val) {
+
+                    switch (key) {
+                        case "HullCoordinates":
+                            {
+                                var terrHullPoints = [];
+
+                                //Loop through collection
+                                $.each(val, function (objKey, Latlongval) {
+                                    var latLng = new google.maps.LatLng(Latlongval.X, Latlongval.Y);
+                                    hullPoints.push(latLng);
+                                    terrHullPoints.push(latLng);
+                                });
+                                polyline = new google.maps.Polygon({
+                                    map: map,
+                                    paths: terrHullPoints,
+                                    fillColor: "#FF0000",
+                                    strokeWidth: 2,
+                                    fillOpacity: 0.5,
+                                    strokeColor: "#0000FF",
+                                    strokeOpacity: 0.5
+                                });
+
+                                var curBounds = new google.maps.LatLngBounds();
+                                //  Go through each...
+                                for (var i = 0, LtLgLen = terrHullPoints.length; i < LtLgLen; i++) {
+                                    //  And increase the bounds to take this point
+                                    curBounds.extend(terrHullPoints[i]);
+                                }
+
+                                //Label Territory
+                                addMarkerWithTimeout(curBounds.getCenter(), terName, terID, i * 50);
+
+                                //Add to the timeout
+                                markerTimeout++;
+                                break;
+                            }
+                        case "TerritoryName":
+                            {
+                                terName = val;
+                                break;
+                            }
+                        case "TerritoryID":
+                            {
+                                terID = val;
+                                break;
+                            }
+                    }
+
+                });
+            });
+            //Re-Center Map
+            var bounds = new google.maps.LatLngBounds();
+            //  Go through each...
+            for (var i = 0, LtLgLen = hullPoints.length; i < LtLgLen; i++) {
+                //  And increase the bounds to take this point
+                bounds.extend(hullPoints[i]);
+            }
+            //  Fit these bounds to the map
+            map.fitBounds(bounds);
+
+        });
+    }
+
+    function addMarkerWithTimeout(position, title, id, timeout) {
+        var contentString = '<div id="content">' +
+            '<div id="siteNotice">' +
+            '</div>' +
+            '<h1 id="firstHeading" class="firstHeading">Territory Name: ' + title + '</h1>' +
+            '<div id="bodyContent">' +            
+            '<p>Click here to go to the territory page: <a href="@Url.Action("Details", "Territory")/' + id + '">' +
+             title + '</a></p>' +
+            '</div>' +
+            '</div>';
+
+        var infowindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+
+        window.setTimeout(function () {
+            var marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: title,
+                animation: google.maps.Animation.DROP
+            });
+            marker.addListener('click', function () {
+                infowindow.open(map, marker);
+            });
+            markers.push(marker);
+        }, timeout);        
+    }
+</script>

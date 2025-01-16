@@ -1,0 +1,288 @@
+﻿@model TerritoryWeb.Models.Door
+
+@{
+    ViewBag.Title = Resources.Menu.Breadcrum.DoorCreate;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #map {
+        height: 400px;
+    }
+</style>
+<ol class="breadcrumb">
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Home, "Index", "Home")</li>
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Territories, "Index", "Territory")</li>
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Doors, "Index", new { TerritoryID = @Request.QueryString["TerritoryID"] })</li>
+    <li class="active">@Resources.Menu.Breadcrum.DoorCreate</li>
+</ol>
+<h2>@Resources.Menu.Breadcrum.DoorCreate</h2>
+<div class="row">
+    <div class="col-md-6">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>@Resources.Views.Doors.Create.Door</h4>
+                <hr />
+                @Html.ValidationSummary(true)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TerritoryID, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(x => x.TerritoryID, (IEnumerable<SelectListItem>)ViewBag.TerritoryID, string.Empty, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.TerritoryID)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Address, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Address)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Street, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Street, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Street)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Apartment, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Apartment, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Apartment)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PostalCode, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.PostalCode, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PostalCode)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LanguageID, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(x => x.LanguageID, (IEnumerable<SelectListItem>)ViewBag.LanguageID, string.Empty, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.LanguageID)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Comments, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Comments, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Comments)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Telephone, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Telephone, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Telephone)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CodeID, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(x => x.CodeID, (IEnumerable<SelectListItem>)ViewBag.CodeID, string.Empty, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CodeID)
+                    </div>
+                </div>
+                @Html.HiddenFor(model => model.GeoLat)
+                @Html.HiddenFor(model => model.GeoLong)
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-md-8">
+                        <input type="submit" id="doorCreatebtn" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-6">
+        <h4>@Resources.Views.Doors.Create.MapView</h4>
+        <hr />
+        <div id="map"></div>
+        <div id="verAddressDisp"></div>
+    </div>
+</div>
+<div>
+    @Html.ActionLink(Resources.Views.Doors.Create.BackToList, "Index", new { TerritoryID = @Request.QueryString["TerritoryID"] }, new { @class = "btn btn-default" })
+</div>
+<script>
+    $(function () {
+        $("#TerritoryID").val("@Request.QueryString["TerritoryID"]");
+        $("#TerritoryID").prop("disabled", true);
+        $("#doorCreatebtn").prop("disabled", true);
+    });
+
+    $("#Address, #Street, #PostalCode").blur(function () {
+        VerifyAddress();
+    });
+
+
+    var map;
+    var address = "";
+    var markers = [];
+    //Verify Map
+    function VerifyAddress() {
+
+        if ($("#Address").val() == "" || $("#Street").val() == "") {
+            return;
+        }
+
+        var tmpadd = $("#Address").val() + " " + $("#Street").val();
+        var zip = ($("#PostalCode").val() == "") ? "@ViewBag.City" : $("#PostalCode").val();
+
+        address = tmpadd + " " + zip;
+
+        if (map == null) {
+            initMap();
+        } else {
+            deleteMarkers();
+            var geocoder = new google.maps.Geocoder();
+            geocodeAddress(geocoder, map);
+        }
+
+    }
+
+    var hullPoints = [];
+    var territoryBounds;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            fullscreenControl: true
+        });
+
+        var url = "@Url.Action("GetTerritoryCord", "Territory")/?TerritoryId=@Request.QueryString["TerritoryID"] ";
+        var jqxhr = $.getJSON(url, function (data) {
+            $.each(data, function (key, val) {
+                switch (key) {
+                    case "HullCoordinates":
+                        {
+                            //Loop through collection
+                            $.each(val, function (objKey, Latlongval) {
+                                var latLng = new google.maps.LatLng(Latlongval.X, Latlongval.Y);
+                                hullPoints.push(latLng);
+                            });
+                            polyline = new google.maps.Polygon({
+                                map: map,
+                                paths: hullPoints,
+                                fillColor: "#FF0000",
+                                strokeWidth: 2,
+                                fillOpacity: 0.1,
+                                strokeColor: "#0000FF",
+                                strokeOpacity: 0.5
+                            });
+                            break;
+                        }
+                }
+
+            });
+            //Re-Center Map
+            var bounds = new google.maps.LatLngBounds();
+            //  Go through each...
+            for (var i = 0, LtLgLen = hullPoints.length; i < LtLgLen; i++) {
+                //  And increase the bounds to take this point
+                bounds.extend(hullPoints[i]);
+            }
+            //  Fit these bounds to the map
+            map.fitBounds(bounds);
+
+            //Set Territory Bounds
+            territoryBounds = new google.maps.Polygon({ paths: hullPoints });
+        });
+    }
+
+
+    function geocodeAddress(geocoder, resultsMap) {
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                resultsMap.setCenter(results[0].geometry.location);
+                addMarker(results[0].geometry.location);
+                $("#GeoLat").val(map.getCenter().lat());
+                $("#GeoLong").val(map.getCenter().lng());
+                resultsMap.setZoom(17);
+
+                var errmsg = "";
+                //Check boundary
+                if (google.maps.geometry.poly.containsLocation(results[0].geometry.location, territoryBounds)) {
+                    errmsg = "";
+                    $("#doorCreatebtn").prop("disabled", false);
+
+                    //Set Zipcode
+                    $("#PostalCode").val(results[0].address_components[6].short_name);
+
+                }
+                else {
+                    errmsg = "<br /><div class=\"alert alert-danger\" role=\"alert\"><b>ERROR:</b> @Resources.Views.Doors.Index.GeoCodeError1</div>";
+                    $("#doorCreatebtn").prop("disabled", true);
+                }
+
+                //Display Address
+                $("#verAddressDisp").html("<b>@Resources.Views.Doors.Index.GeoCodeMsg1:</b> " + results[0].formatted_address + errmsg);
+
+            } else {
+                $("#verAddressDisp").html("<b>ERROR:</b> @Resources.Views.Doors.Index.GeoCodeError3: " + status + "<br />@Resources.Views.Doors.Index.GeoCodeError4");
+                //alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    }
+
+
+    // Adds a marker to the map and push to the array.
+    function addMarker(location) {
+        var marker = new google.maps.Marker({
+            position: location,
+            map: map
+        });
+        markers.push(marker);
+    }
+
+    // Sets the map on all markers in the array.
+    function setMapOnAll(map) {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(map);
+        }
+    }
+
+    // Removes the markers from the map, but keeps them in the array.
+    function clearMarkers() {
+        setMapOnAll(null);
+    }
+
+    // Shows any markers currently in the array.
+    function showMarkers() {
+        setMapOnAll(map);
+    }
+
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers() {
+        clearMarkers();
+        markers = [];
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnFyc29RtN2hda5KjuK4queRlRtN3HIYE&callback=initMap&language=@TerritoryWeb.Common.Properties.Culture"
+        async defer></script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

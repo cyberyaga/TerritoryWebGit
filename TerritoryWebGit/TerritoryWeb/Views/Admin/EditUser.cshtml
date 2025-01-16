@@ -1,0 +1,244 @@
+﻿@using TerritoryWeb.Models
+@model TerritoryWeb.Models.CreatePublisherViewModel
+
+@{
+    ViewBag.Title = "EditUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<ol class="breadcrumb">
+    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <li>@Html.ActionLink("Admin Page", "Index", "Admin")</li>
+    <li>@Html.ActionLink("Manage Users", "ManageUsers", "Admin")</li>
+    <li class="active">Edit User</li>
+</ol>
+<h2>Edit User</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        @ViewBag.ErrorMessage
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <br />
+                    <button type="button" class="btn btn-primary" aria-label="Send Password Reset" data-toggle="modal" data-target="#pwdResetModal">
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Send Password Reset
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="EmailGrp">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Address1, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Address1, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Address1, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Address2, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Address2, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Address2, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" id="PhoneNumberGrp">
+                        @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group collapse">
+                        @Html.LabelFor(model => model.CellPhone, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.CellPhone, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CellPhone, "", new { @class = "text-danger" })
+                    </div>
+                    @if (User.IsInRole("SuperAdmin"))
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.CongregationID, new { @class = "control-label col-md-2" })
+                            @Html.DropDownListFor(model => model.CongregationID, (SelectList)ViewBag.Congregations, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.CongregationID)
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-default" id="submitbtn" />
+                        <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteaccountmodal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete User</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="alert alert-danger collapse" role="alert" id="warningmsg"><b>Validation Error:</b> You need to specify either an email address or a cellphone number, to validate the account created.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Roles</div>
+                <div class="panel-body">
+                    <div class="btn-group" data-toggle="buttons">
+                        @foreach (var item in (List<AspNetRole>)ViewBag.Roles)
+                        {
+                            <label class="btn btn-default @(Model.Roles.Contains(item) ? "active" : "")">
+                                @Html.RadioButton("Permissions", item.Name, Model.Roles.Contains(item))
+                                @item.Name
+                            </label>
+                        }
+                    </div>
+                    <br /><br />
+                    Description:
+                    <ul>
+                        <li>Admin - Manages Users, is able to create and delete territories.</li>
+                        <li>Manager - Able to Create and Delete Territories.</li>
+                        <li>Editor - Able to edit door information.</li>
+                        <li>ReadOnly - Only allowed to view data. Can't modify.</li>
+                    </ul>
+                </div>
+            </div>
+            <hr />
+            <div class="panel panel-default">
+                <div class="panel-heading">Restrictions</div>
+                <div class="panel-body">
+                    <div class="btn-group" data-toggle="buttons">
+                        @foreach (var item in (List<PublisherType>)ViewBag.PublisherTypes)
+                        {
+                            <label class="btn btn-default @(Model.PublisherType.Contains(item) ? "active" : "")">
+                                @Html.RadioButton("PublisherType", item.Description, Model.PublisherType.Contains(item))
+                                @item.Description
+                            </label>
+                        }
+                    </div>
+                    <br /><br />
+                    Description:
+                    <ul>
+                        <li>Publisher - View common data. Can't receive territory.</li>
+                        <li>Pioneer - View common data. Allowed to be assigned territory.</li>
+                        <li>Elder - View Restricted data. Allowed to be assigned territory.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- Password Reset Modal -->
+<div class="modal fade" id="pwdResetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Password Reset Request</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to send a password reset request to this user's email address?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="pwdresetbtn">Send Reset Request</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Password Reset Modal -->
+<div class="modal fade" id="deleteaccountmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("DeleteUser", "Admin", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.Id)
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete User Account</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this user account?<br />
+                    -=THIS ACTION CANNOT BE UNDONE=-
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger" id="pwdresetbtn">Delete User Account</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $("#pwdresetbtn").click(function () {
+        //Json call
+        var url = "@Url.Action("SendPasswordReset", "Admin")/?UserID=@Model.Id";
+        var jqxhr = $.getJSON(url, function () {
+            //Close Modal
+            $("#pwdResetModal").modal("hide");
+            alert("Password Reset Sent.");
+        });
+    });
+
+    $("#submitbtn").click(function (event) {
+        if ($("#Email").val() == "" && $("#PhoneNumber").val() == "") {
+            event.preventDefault();
+            $("#warningmsg").show();
+            $("#EmailGrp").addClass("has-error");
+            $("#PhoneNumberGrp").addClass("has-error");
+        } else {
+            $("#warningmsg").hide();
+            $("#EmailGrp").removeClass("has-error");
+            $("#PhoneNumberGrp").removeClass("has-error");
+        }
+
+    });
+
+    $("#Email, #PhoneNumber").on("input", function () {
+        $("#warningmsg").hide();
+        $("#EmailGrp").removeClass("has-error");
+        $("#PhoneNumberGrp").removeClass("has-error");
+    });
+
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

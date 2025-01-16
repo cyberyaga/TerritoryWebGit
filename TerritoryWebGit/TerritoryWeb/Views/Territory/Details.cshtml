@@ -1,0 +1,319 @@
+﻿@model TerritoryWeb.Models.Territory
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #map {
+        height: 400px;
+    }
+</style>
+<ol class="breadcrumb">
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Home, "Index", "Home")</li>
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Territories, "Index", "Territory")</li>
+    <li class="active">@Resources.Menu.Breadcrum.TerritoryDetails</li>
+</ol>
+<h2>Details</h2>
+<div class="row">
+    <div class="col-md-3">
+        <div class="row">
+            <div class="col-md-12">
+                <dl>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.TerritoryName)
+                    </dt>
+                    <dd>
+                        @Html.TextBoxFor(model => model.TerritoryName, new { @class = "form-control", @readonly = true })
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.City)
+                    </dt>
+                    <dd>
+                        @Html.TextBoxFor(model => model.City, new { @class = "form-control", @readonly = true })
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </dt>
+                    <dd>
+                        @Html.TextBoxFor(model => model.TerritoryType.Description, new { @class = "form-control", @readonly = true })
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Notes)
+                    </dt>
+                    <dd>
+                        @Html.TextAreaFor(model => model.Notes, 6, 0, new { @class = "form-control", @readonly = true })
+                    </dd>
+                </dl>
+            </div class="col-md-12">
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>@Resources.Views.Territory.Details.DoorsDetails</h4>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        @Resources.Views.Territory.Index.DoorCount:  @Model.Doors.Count.ToString()
+                    </div>
+                    <div class="col-md-6">
+                        <a href="@Url.Action("Index", "Doors", new { TerritoryID = @Model.Id })" class="btn btn-default"><i class="fa fa-address-book-o" aria-hidden="true"></i> @Resources.Views.Territory.Details.DoorListButton</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h4>@Html.DisplayNameFor(m => m.AssignedPublisherID)</h4>
+        <hr />
+        <dl>
+            <dt>
+                @Html.DisplayNameFor(m => m.AssignedPublisherID)
+            </dt>
+            <dd>
+                @Html.TextBoxFor(model => model.AssignedUser.FullName, new { @class = "form-control", @readonly = true })
+            </dd>
+            <dt>
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span> @Html.DisplayNameFor(m => Model.CheckedOut)
+            </dt>
+            <dd id="checkoutstring">
+                @Html.TextBoxFor(model => model.CheckedOut, new { @class = "form-control", @readonly = true })
+            </dd>
+            <dt>
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span> @Html.DisplayNameFor(m => Model.CheckedIn)
+            </dt>
+            <dd id="checkinstring">
+                @Html.TextBoxFor(model => model.CheckedIn, new { @class = "form-control", @readonly = true })
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(m => m.LastCheckedInBy)
+            </dt>
+            <dd>
+                @Html.TextBoxFor(model => model.LastCheckedInUser.FullName, new { @class = "form-control", @readonly = true })
+            </dd>
+        </dl>
+        <button type="button" class="btn btn-default" id="checkoutbtn" data-toggle="modal" data-target="#myAssignModal"><i class="fa fa-reply" aria-hidden="true"></i> @Resources.Views.Territory.Details.CheckOutBtn</button>
+        <button type="button" class="btn btn-default" id="checkinbtn" data-toggle="modal" data-target="#myCheckInModal"><i class="fa fa-share" aria-hidden="true"></i> @Resources.Views.Territory.Details.CheckInBtn</button>
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myShareModal"><i class="fa fa-share-square-o" aria-hidden="true"></i> Share Territory</button><br /><br />
+        @*<button type="button" class="btn btn-default" id="printbtn" @ViewBag.printenabled><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print Territory</button><br /><br />*@
+        <a href="@Url.Action("PDFReport", "Reports", new { ReportName = "SmallTerrPrintout", RptValue1 = Model.Id })" target="_blank" class="btn btn-default"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> @Resources.Views.Territory.Details.PrintTerritoryBtn</a> 
+        <a href="@Url.Action("PDFReport", "Reports", new { ReportName = "SmallTerrPrintoutProx", RptValue1 = Model.Id })" target="_blank" class="btn btn-default"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> @Resources.Views.Territory.Details.PrintTerritoryProxBtn</a><br /><br />
+        <a href="@Url.Action("PDFReport", "Reports", new { ReportName = "DetailTerrPrintout", RptValue1 = Model.Id })" target="_blank" class="btn btn-default"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> @Resources.Views.Territory.Details.PrintTerritoryDetailsBtn</a>
+    </div>
+    <div class="col-md-5">
+        <h4>@Resources.Views.Territory.Details.TerritoryViewLabel</h4>
+        <hr />
+        <div id="map"></div>
+    </div>
+</div>
+<p>
+    <a href="@Url.Action("Edit", "Territory", new { id = Model.Id })" class="btn btn-default"><i class="fa fa-pencil" aria-hidden="true"></i> @Resources.Views.Territory.Details.EditTerritoryBtn</a>
+</p>
+<!-- Modal -->
+<div class="modal fade" id="myAssignModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">@Resources.Views.Territory.Details.CheckOutModalLabel</h4>
+            </div>
+            <div class="modal-body">
+                @Resources.Views.Territory.Details.CheckOutModalMessage:
+                <select id="asspublishlist" class="form-control"></select>
+            </div>
+            <div class="modal-footer">
+                @{
+                    //TODO: Add error msg on no selection of publisher
+                }
+                <button type="button" class="btn btn-primary" id="assterrbtn">@Resources.Views.Territory.Details.CheckOutModalAssignBtn</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Resources.Common.Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myCheckInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">@Resources.Views.Territory.Details.CheckInModalLabel</h4>
+            </div>
+            <div class="modal-body">
+                @Resources.Views.Territory.Details.CheckInModalMessage
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="checkinconfbtn">@Resources.Views.Territory.Details.CheckInBtn</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Resources.Common.Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myShareModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-share-square-o" aria-hidden="true"></i> Share Territory</h4>
+                (send a static copy of the territory)
+            </div>
+            <div class="modal-body">
+                Please select the person you want to send this territory to:
+                <select id="asspublishlist2" class="form-control"></select><br />
+                Enter CellPhone number:<br />
+                <input type="tel" name="name" class="form-control" /><br />
+                Enter Email Address:<br />
+                <input type="email" name="name" class="form-control" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Send</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Resources.Common.Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#checkoutbtn").prop("disabled", ($("#CheckedOut").val().replace("\n", "").trim() != ""));
+        $("#checkinbtn").prop("disabled", !$("#checkoutbtn").prop("disabled"));
+    });
+
+    @*$("#printbtn").click(function () {
+        var myWindow = window.open("@Url.Content("~/Reports/TerritoryPrintout.aspx?RptName=SmallTerrPrintout&RptVal1=" + @Model.Id)", "", "width=800,height=600");
+    });
+
+    $("#printbtndtl").click(function () {
+        var myWindow = window.open("@Url.Content("~/Reports/TerritoryPrintout.aspx?RptName=DetailTerrPrintout&RptVal1=" + @Model.Id)", "", "width=800,height=600");
+    });*@
+
+    $("#printbtn").click(function () {
+        var myWindow = window.open("@Url.Action("TerritoryPrintOut", "Reports", new { TerritoryID = Model.Id })", "", "width=400,height=600");
+    });
+
+    $("#mapbtn").click(function () {
+        viewTerritory();
+    });
+
+    $("#myAssignModal").on('show.bs.modal', function (e) {
+        //Json call
+        var url = "@Url.Action("GetListOfPublishers", "Territory")";
+        var jqxhr = $.getJSON(url, function (data) {
+            var drop1 = $("#asspublishlist");
+            var drop2 = $("#asspublishlist2");
+            filldrop(drop1, data);
+            filldrop(drop2, data);
+        });
+    });
+
+    function filldrop(options, data) {
+        options.empty();
+        options.append($("<option />").val("").text(""));
+        $.each(data, function (key, val) {
+            options.append($("<option />").val(key).text(val));
+        });
+    }
+
+    $("#assterrbtn").click(function () {
+        var dropdown = $("#asspublishlist");
+        if (dropdown.val() == "") {
+            return;
+        }
+
+        //Json call
+        var url = "@Url.Action("CheckOutTerritory", "Territory")/?TerritoryID=@Model.Id&PublisherID=" + dropdown.val();
+        var jqxhr = $.getJSON(url, function () {
+            //Close Modal
+            $("#myAssignModal").modal("hide");
+            location.reload();
+        }).error(function(jqXHR, textStatus, errorThrown) {
+            alert("@Resources.Views.Territory.Details.Error1: " + textStatus);
+        });
+    });
+
+    $("#checkinconfbtn").click(function () {
+        //Json call
+        var url = "@Url.Action("CheckInTerritory", "Territory")/?TerritoryID=@Model.Id";
+        var jqxhr = $.getJSON(url, function () {
+            //Close Modal
+            $("#myCheckInModal").modal("hide");
+            location.reload();
+        });
+    });
+
+    var map;
+    var gmarkers = [];
+    var points = [];
+    var hullPoints = [];
+    var polyline;
+
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 17,
+            fullscreenControl: true
+        });
+
+        var url = "@Url.Action("GetTerritoryCord", "Territory")/?TerritoryId=@Model.Id";
+        $.ajaxSetup({ cache: false });
+        var jqxhr = $.getJSON(url, function (data) {
+            $.each(data, function (key, val) {
+                switch (key) {
+                    case "HullCoordinates":
+                        {
+                            //Loop through collection
+                            $.each(val, function (objKey, Latlongval) {
+                                var latLng = new google.maps.LatLng(Latlongval.X, Latlongval.Y);
+                                hullPoints.push(latLng);
+                            });
+                            polyline = new google.maps.Polygon({
+                                map: map,
+                                paths: hullPoints,
+                                fillColor: "#FF0000",
+                                strokeWidth: 2,
+                                fillOpacity: 0.5,
+                                strokeColor: "#0000FF",
+                                strokeOpacity: 0.5
+                            });
+                            break;
+                        }
+                    case "DoorCoordinates":
+                        {
+                            //Loop through collection
+                            $.each(val, function (objKey, Latlongval) {
+                                var latLng = new google.maps.LatLng(Latlongval.Coordinates.X, Latlongval.Coordinates.Y);
+                                // Creating a marker and putting it on the map
+                                var marker = new google.maps.Marker({
+                                    position: latLng,
+                                    //icon: {
+                                    //    path: google.maps.SymbolPath.CIRCLE,
+                                    //    scale: 3
+                                    //},
+                                    map: map
+                                });
+                                points.push(latLng);
+                                gmarkers.push(marker);
+                            });
+                            break;
+                        }
+                }
+
+            });
+            //Re-Center Map
+            var bounds = new google.maps.LatLngBounds();
+            //  Go through each...
+            for (var i = 0, LtLgLen = hullPoints.length; i < LtLgLen; i++) {
+                //  And increase the bounds to take this point
+                bounds.extend(hullPoints[i]);
+            }
+            //  Fit these bounds to the map
+            map.fitBounds(bounds);
+
+            // Add a marker clusterer to manage the markers.
+            var markerCluster = new MarkerClusterer(map, gmarkers,
+                { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+        });
+    }
+</script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnFyc29RtN2hda5KjuK4queRlRtN3HIYE&callback=initMap&language=@TerritoryWeb.Common.Properties.Culture" async defer></script>

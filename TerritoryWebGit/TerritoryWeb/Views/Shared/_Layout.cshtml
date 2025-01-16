@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="@(TerritoryWeb.Common.Properties.Culture + "_US")">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Territory Web</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="@Url.Action("Index", "Home")" class="navbar-brand">
+                    <span class="glyphicon glyphicon-tower"></span>
+                    Territory Web
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @using Microsoft.AspNet.Identity
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home fa-lg"></i> @Resources.Menu.MainMenu.Home</a></li>
+                        <li><a href="@Url.Action("Index", "Territory")"><i class="fa fa-map-o fa-lg"></i> @Resources.Menu.MainMenu.Territories</a></li>
+                        <li><a href="@Url.Action("Index", "Admin")"><i class="fa fa-sliders fa-lg"></i> @Resources.Menu.MainMenu.Manage</a></li>
+                    }
+                    <li><a href="@Url.Action("Index", "Help")"><i class="fa fa-info" aria-hidden="true"></i> @Resources.Menu.MainMenu.Help</a></li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <i class="fa fa-language" aria-hidden="true"></i> @Resources.Menu.MainMenu.LanguageOption:
+                        <div class="btn-group" role="group" aria-label="...">
+                            <a href="@TerritoryWeb.Common.Methods.GetCultureURL(Request.Url, "en" )" class="btn btn-sm btn-default navbar-btn @(TerritoryWeb.Common.Properties.Culture == "en" ? "active" : "")">English</a>
+                            <a href="@TerritoryWeb.Common.Methods.GetCultureURL(Request.Url, "es" )" class="btn btn-sm btn-default navbar-btn @(TerritoryWeb.Common.Properties.Culture == "es" ? "active" : "")">Español</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Territory Web</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

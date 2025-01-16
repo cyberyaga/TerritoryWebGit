@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8027c28f9f744cb387b24e6fec8d9c5b" Name="Diagram1" ZoomLevel="100">
+        <EntityTypeShape EntityType="TerritoryWebModel.Congregation" Width="1.5" PointX="3" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="TerritoryWebModel.DoorCode" Width="1.5" PointX="2.875" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TerritoryWebModel.TerritoryType" Width="1.5" PointX="8.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="TerritoryWebModel.TerritoryBound" Width="1.5" PointX="8.375" PointY="8.875" />
+        <EntityTypeShape EntityType="TerritoryWebModel.Territory" Width="1.875" PointX="8.25" PointY="3.375" />
+        <AssociationConnector Association="TerritoryWebModel.FK_Territory_ToCongregation" />
+        <AssociationConnector Association="TerritoryWebModel.FK_Territory_ToType" />
+        <AssociationConnector Association="TerritoryWebModel.FK_TerritoryBound_Territory" />
+        <EntityTypeShape EntityType="TerritoryWebModel.AspNetUserRole" Width="1.5" PointX="2.625" PointY="0.5" />
+        <EntityTypeShape EntityType="TerritoryWebModel.AspNetUser" Width="1.5" PointX="0.5" PointY="1.125" />
+        <EntityTypeShape EntityType="TerritoryWebModel.PublisherType" Width="1.5" PointX="0.5" PointY="8" />
+        <AssociationConnector Association="TerritoryWebModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="TerritoryWebModel.FK_AspNetUsers_Congregation" />
+        <AssociationConnector Association="TerritoryWebModel.FK_AspNetUsers_PublisherType" />
+        <AssociationConnector Association="TerritoryWebModel.FK_Territory_AspNetUsers" />
+        <AssociationConnector Association="TerritoryWebModel.FK_Territory_AspNetUsers1" />
+        <EntityTypeShape EntityType="TerritoryWebModel.AspNetRole" Width="1.5" PointX="4.875" PointY="0.5" />
+        <AssociationConnector Association="TerritoryWebModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" />
+        <EntityTypeShape EntityType="TerritoryWebModel.Door" Width="1.5" PointX="5.5" PointY="6.625" />
+        <AssociationConnector Association="TerritoryWebModel.FK_Door_ToDoorCode" />
+        <AssociationConnector Association="TerritoryWebModel.FK_Door_ToTerritory" />
+        <EntityTypeShape EntityType="TerritoryWebModel.URLMinimizeStore" Width="1.5" PointX="0.5" PointY="10.5" />
+        <EntityTypeShape EntityType="TerritoryWebModel.Language" Width="1.5" PointX="5.875" PointY="3.375" />
+        <AssociationConnector Association="TerritoryWebModel.FK_Door_ToLanguage" />
+        <AssociationConnector Association="TerritoryWebModel.FK_Language_Congregation" />
+        <AssociationConnector Association="TerritoryWebModel.FK_DoorCode_Congregation" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

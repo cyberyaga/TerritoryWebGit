@@ -1,0 +1,31 @@
+﻿@model IEnumerable<TerritoryWeb.Models.AspNetUser>
+<ol class="breadcrumb">
+    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <li class="active">Publishers</li>
+</ol>
+<h2>Publishers</h2>
+@Html.ActionLink("Create Publisher", "Create", "Publishers", new { id = @Request.QueryString["TerritoryID"] }, new { @class = "btn btn-default" })<br /><br />
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().FirstName)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().LastName)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().Email)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m => u.FirstName)</td>
+                <td>@Html.DisplayFor(m => u.LastName)</td>
+                <td>@Html.DisplayFor(m => u.Email)</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = u.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = u.Id }) 
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

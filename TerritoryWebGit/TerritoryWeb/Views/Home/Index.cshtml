@@ -1,0 +1,71 @@
+﻿@model TerritoryWeb.Models.HomeScreenModel
+@{
+    ViewBag.Title = Resources.Views.Home.Index.PageTitle;
+}
+
+<div class="jumbotron">
+    <h1>@Resources.Views.Home.Index.WelcomeTitle</h1>
+    <p class="lead">@Resources.Views.Home.Index.WelcomeParagraph</p>
+    <p><a href="#" class="btn btn-primary btn-large">@Resources.Views.Home.Index.WelcomeLink &raquo;</a></p>
+</div>
+@if (Request.IsAuthenticated)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <h2>@Resources.Views.Home.Index.Dash1Title</h2>
+            <table class="table table-striped table-hover table-condensed">
+                <tr>
+                    <th>@Resources.Views.Home.Index.DashHeaderTerritory</th>
+                    <th>@Resources.Views.Home.Index.DashHeaderCount</th>
+                    <th>@Resources.Views.Home.Index.DashHeaderLastAdded</th>
+                </tr>
+                @foreach (var item in Model.TerritoriesAdded)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(item.Territory, "Details", "Territory", new { id = item.TerritoryID }, new { title = @Resources.Views.Home.Index.TerritoryButtonTitle })</td>
+                        <td>@item.count</td>
+                        <td>@item.AddedModDate</td>
+                    </tr>
+                }
+            </table>
+            <p>@Html.ActionLink(Resources.Views.Home.Index.Dash1Link + " »", "Index", "Territory", null, new { @class = "btn btn-default" })</p>
+        </div>
+        <div class="col-md-4">
+            <h2>@Resources.Views.Home.Index.Dash2Title</h2>
+            <table class="table table-striped table-hover table-condensed">
+                <tr>
+                    <th>@Resources.Views.Home.Index.DashHeaderTerritory</th>
+                    <th>@Resources.Views.Home.Index.DashHeaderCheckedIn</th>
+                </tr>
+                @foreach (var item in Model.CheckedInTerritories)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(item.Territory, "Details", "Territory", new { id = item.TerritoryID }, new { title = @Resources.Views.Home.Index.TerritoryButtonTitle })</td>
+                        <td>@item.CheckedInTime</td>
+                    </tr>
+                }
+            </table>
+
+            <p>@Html.ActionLink(Resources.Views.Home.Index.Dash2Link + " »", "Index", "Territory", null, new { @class = "btn btn-default" })</p>
+        </div>
+        <div class="col-md-4">
+            <h2>@Resources.Views.Home.Index.Dash3Title</h2>
+            <table class="table table-striped table-hover table-condensed">
+                <tr>
+                    <th>@Resources.Views.Home.Index.DashHeaderTerritory</th>
+                    <th>@Resources.Views.Home.Index.DashHeaderCount</th>
+                    <th>@Resources.Views.Home.Index.DashHeaderLastModified</th>
+                </tr>
+                @foreach (var item in Model.TerritoriesModified)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(item.Territory, "Details", "Territory", new { id = item.TerritoryID }, new { title = @Resources.Views.Home.Index.TerritoryButtonTitle })</td>
+                        <td>@item.count</td>
+                        <td>@item.AddedModDate</td>
+                    </tr>
+                }
+            </table>
+            <p>@Html.ActionLink(Resources.Views.Home.Index.Dash3Link + " »", "Index", "Territory", null, new { @class = "btn btn-default" })</p>
+        </div>
+    </div>
+}

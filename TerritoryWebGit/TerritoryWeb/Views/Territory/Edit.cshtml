@@ -1,0 +1,173 @@
+﻿@model TerritoryWeb.Models.Territory
+
+@{
+    ViewBag.Title = Resources.Common.Edit;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #map {
+        height: 400px;
+    }
+</style>
+<ol class="breadcrumb">
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Home, "Index", "Home")</li>
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Territories, "Index", "Territory")</li>
+    <li>@Html.ActionLink(Model.TerritoryName, "Details", new { id = Model.Id })</li>
+    <li class="active">@Resources.Menu.Breadcrum.TerritoryEdit</li>
+</ol>
+<h2>@Resources.Common.Edit</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>@Resources.Views.Territory.Edit.Title</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.Id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.TerritoryName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.TerritoryName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TerritoryName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.City, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.City, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.City)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Type, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.TerritoryTypes)
+                {
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(x => x.Type, item.Value, new { id = item.Value })
+                        @Html.DisplayFor(model => item.Text)
+                    </label>
+                }
+
+                @Html.ValidationMessageFor(model => model.Type)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Notes, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Notes, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Notes)
+            </div>
+        </div>
+
+        <h4>@Resources.Views.Territory.Edit.EditTerritoryBoundsLabel</h4>
+        <hr />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div id="map"></div>
+                <input class="form-control collapse" type="text" name="mapdata" id="mapdata" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="@Resources.Common.Save" class="btn btn-default" />
+                @Html.ActionLink(@Resources.Common.Cancel, "Details", new { id = @Model.Id }, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="@Url.Action("Details", "Territory", new { id = Model.Id })" class="btn btn-default"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> @Resources.Views.Territory.Edit.BackBtn @Model.TerritoryName</a>
+</div>
+<script>
+    var map;
+    var terrHullPoints = [];
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 17,
+            fullscreenControl: true
+        });
+
+        var terName = "";
+        var url = "@Url.Action("GetTerritoryCord", "Territory")/?TerritoryId=@Model.Id";
+        $.ajaxSetup({ cache: false });
+        var jqxhr = $.getJSON(url, function (data) {
+            $.each(data, function (mkey, mval) {
+                switch (mkey) {
+                    case "HullCoordinates":
+                        {
+
+                            //Loop through collection
+                            $.each(mval, function (objKey, Latlongval) {
+                                var latLng = new google.maps.LatLng(Latlongval.X, Latlongval.Y);
+                                terrHullPoints.push(latLng);
+                            });
+                            mypoly = new google.maps.Polygon({
+                                map: map,
+                                paths: terrHullPoints,
+                                fillColor: "#FF0000",
+                                strokeWidth: 2,
+                                fillOpacity: 0.5,
+                                strokeColor: "#0000FF",
+                                strokeOpacity: 0.5,
+                                editable: true
+                            });
+
+                            //add event trigger
+                            google.maps.event.addListener(mypoly.getPath(), 'insert_at', function () {
+                                recordMapData();
+                            });
+
+                            //add event trigger
+                            google.maps.event.addListener(mypoly.getPath(), 'set_at', function () {
+                                recordMapData();
+                            });
+
+                            //add event trigger
+                            google.maps.event.addListener(mypoly.getPath(), 'remove_at', function () {
+                                recordMapData();
+                            });
+                            break;
+                        }
+                }
+            });
+
+
+            //Re-Center Map
+            var bounds = new google.maps.LatLngBounds();
+            //  Go through each...
+            for (var i = 0, LtLgLen = terrHullPoints.length; i < LtLgLen; i++) {
+                //  And increase the bounds to take this point
+                bounds.extend(terrHullPoints[i]);
+            }
+            //  Fit these bounds to the map
+            map.fitBounds(bounds);
+
+        });
+    }
+
+    function recordMapData() {
+        var vertices = mypoly.getPath();
+        var arrayString = "";
+        // Iterate over the vertices.
+        for (var i = 0; i < vertices.getLength() ; i++) {
+            var xy = vertices.getAt(i);
+            arrayString += '(' + xy.lat() + ',' + xy.lng() + ')';
+        }
+
+        $("#mapdata").val(arrayString);
+    }
+
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnFyc29RtN2hda5KjuK4queRlRtN3HIYE&callback=initMap&language=@TerritoryWeb.Common.Properties.Culture" async defer></script>
+

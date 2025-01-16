@@ -1,0 +1,124 @@
+﻿@model TerritoryWeb.Models.Territory
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #map {
+        height: 400px;
+    }
+</style>
+<ol class="breadcrumb">
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Home, "Index", "Home")</li>
+    <li>@Html.ActionLink(Resources.Menu.Breadcrum.Territories, "Index", "Territory")</li>
+    <li class="active">@Resources.Menu.Breadcrum.TerritoryCreate</li>
+</ol>
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-horizontal">
+                <h4>Territory</h4>
+                <hr />
+                @Html.ValidationSummary(true)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TerritoryName, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.TerritoryName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.TerritoryName)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.City, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.City, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.City)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Type, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.TerritoryTypes)
+                        {
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(x => x.Type, item.Value, new { id = item.Value })
+                                @Html.DisplayFor(model => item.Text)
+                            </label>
+                        }
+                        @Html.ValidationMessageFor(model => model.Type)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Notes, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.Notes, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Notes)
+                    </div>
+                </div>
+
+                <div class="form-group" id="geocodegroup">
+                    <label class="control-label col-md-2">@Resources.Views.Territory.Create.GeoCodeData</label>
+                    <div class="col-md-10">
+                        <div class="checkbox">
+                            <label>@Html.CheckBox("createfromgeo", false) @Resources.Views.Territory.Create.GeoCodeDataDesc</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="@Resources.Common.Create" class="btn btn-default" />
+                        @Html.ActionLink(@Resources.Common.Cancel, "Index", "Territory", new { @class = "btn btn-default" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>@Resources.Views.Territory.Create.MapTitle</h4>
+            <hr />
+            <div id="map"></div><br />
+            <input class="form-control collapse" type="text" name="mapdata" id="mapdata" />
+            @Resources.Views.Territory.Create.MapHelpDesc
+        </div>
+    </div>
+}
+@Scripts.Render("~/bundles/mappolycreator")
+<script>
+    var creator;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 40.613953, lng: -75.477791 },
+            zoom: 12
+        });
+
+        creator = new PolygonCreator(map);
+
+    }
+
+    $("#map").click(function () {
+        var data = creator.showData();
+        if (data != null) {
+            $("#mapdata").val(data);
+            $("#geocodegroup").show();
+        }
+    });
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnFyc29RtN2hda5KjuK4queRlRtN3HIYE&callback=initMap&language=@TerritoryWeb.Common.Properties.Culture" async defer></script>
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

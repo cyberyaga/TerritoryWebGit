@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../Scripts/jquery-3.2.1.min.js"></script>
+    <script src="../Scripts/jqGrid/i18n/grid.locale-en.js"></script>
+    <script src="../Scripts/jqGrid/jquery.jqGrid.min.js"></script>
+    <link href="../Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="../Content/ui.jqgrid-bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            Test Grid
+            <table id="mygrid"></table>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            //$.jgrid.defaults.width = 780;
+            $("#mygrid").jqGrid({
+                url: "../Doors/GetDoorsData/?TerritoryID=23",
+                mtype: "GET",
+                styleUI: 'Bootstrap',
+                datatype: "json",
+                colModel: [
+                    { label: 'Id', name: 'Id', key: true, width: 75, sorttype: 'number' },
+                    { label: 'Address', name: 'Address', width: 150 },
+                    { label: 'Street', name: 'Street', width: 150 },
+                    { label: 'geolat', name: 'GeoLat', width: 25, hidden: true }
+                ],
+                autowidth: true,
+                loadonce: true,
+                height: "100%",
+                onCellSelect: function (rowid) {
+                    var rowData = $(this).jqGrid("getLocalRow", rowid);
+                    // now you can use rowData.name2, rowData.name3, rowData.name4 ,...
+                    rowSelect(rowid, rowData);
+                }
+            });
+        });
+
+        function rowSelect(rowid, rowData) {
+
+        }
+    </script>
+</body>
+</html>

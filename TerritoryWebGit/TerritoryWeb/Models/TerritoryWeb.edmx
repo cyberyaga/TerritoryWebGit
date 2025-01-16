@@ -1,0 +1,993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TerritoryWebModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Discriminator" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="AspNetUserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Discriminator" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Role_Id" Type="nvarchar" MaxLength="128" />
+          <Property Name="ApplicationUser_Id" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="CongregationID" Type="int" />
+          <Property Name="Language" Type="nvarchar(max)" />
+          <Property Name="FirstName" Type="nvarchar(max)" />
+          <Property Name="LastName" Type="nvarchar(max)" />
+          <Property Name="CellPhone" Type="nvarchar(max)" />
+          <Property Name="Address1" Type="nvarchar(max)" />
+          <Property Name="Address2" Type="nvarchar(max)" />
+          <Property Name="TypeID" Type="int" />
+          <Property Name="IsDisabled" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Congregation">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Door">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TerritoryID" Type="int" Nullable="false" />
+          <Property Name="Address" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Street" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Apartment" Type="varchar" MaxLength="50" />
+          <Property Name="LanguageID" Type="int" />
+          <Property Name="CodeID" Type="int" />
+          <Property Name="Comments" Type="varchar" MaxLength="150" />
+          <Property Name="Name" Type="varchar" MaxLength="150" />
+          <Property Name="Telephone" Type="varchar" MaxLength="50" />
+          <Property Name="PostalCode" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="GeoLat" Type="decimal" Precision="9" Scale="6" />
+          <Property Name="GeoLong" Type="decimal" Precision="9" Scale="6" />
+          <Property Name="AddedBy" Type="varchar" MaxLength="50" />
+          <Property Name="Added" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="Modified" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DoorCode">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="CongregationID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Language">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CongregationID" Type="int" />
+        </EntityType>
+        <EntityType Name="PublisherType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Territory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TerritoryName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Notes" Type="varchar(max)" />
+          <Property Name="CongregationID" Type="int" Nullable="false" />
+          <Property Name="AssignedPublisherID" Type="nvarchar" MaxLength="128" />
+          <Property Name="AddedBy" Type="varchar" MaxLength="50" />
+          <Property Name="Added" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="Modified" Type="datetime" Nullable="false" />
+          <Property Name="CheckedOut" Type="datetime" />
+          <Property Name="CheckedIn" Type="datetime" />
+          <Property Name="LastCheckedInBy" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="TerritoryBound">
+          <Key>
+            <PropertyRef Name="BoundaryID" />
+          </Key>
+          <Property Name="BoundaryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TerritoryID" Type="int" Nullable="false" />
+          <Property Name="GeoLat" Type="decimal" Precision="9" Scale="6" Nullable="false" />
+          <Property Name="GeoLong" Type="decimal" Precision="9" Scale="6" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TerritoryType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="URLMinimizeStore">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="shortURL" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="longURL" Type="varchar" MaxLength="1500" Nullable="false" />
+          <Property Name="dateCreated" Type="datetime" Nullable="false" />
+          <Property Name="used" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_AspNetUsers_Congregation">
+          <End Role="Congregation" Type="Self.Congregation" Multiplicity="0..1" />
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Congregation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUsers">
+              <PropertyRef Name="CongregationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AspNetUsers_PublisherType">
+          <End Role="PublisherType" Type="Self.PublisherType" Multiplicity="0..1" />
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PublisherType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUsers">
+              <PropertyRef Name="TypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Door_ToDoorCode">
+          <End Role="DoorCode" Type="Self.DoorCode" Multiplicity="0..1" />
+          <End Role="Door" Type="Self.Door" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DoorCode">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Door">
+              <PropertyRef Name="CodeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Door_ToLanguage">
+          <End Role="Language" Type="Self.Language" Multiplicity="0..1" />
+          <End Role="Door" Type="Self.Door" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Language">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Door">
+              <PropertyRef Name="LanguageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Door_ToTerritory">
+          <End Role="Territory" Type="Self.Territory" Multiplicity="1" />
+          <End Role="Door" Type="Self.Door" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Territory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Door">
+              <PropertyRef Name="TerritoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DoorCode_Congregation">
+          <End Role="Congregation" Type="Self.Congregation" Multiplicity="1" />
+          <End Role="DoorCode" Type="Self.DoorCode" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Congregation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DoorCode">
+              <PropertyRef Name="CongregationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Language_Congregation">
+          <End Role="Congregation" Type="Self.Congregation" Multiplicity="0..1" />
+          <End Role="Language" Type="Self.Language" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Congregation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Language">
+              <PropertyRef Name="CongregationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Territory_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="Territory" Type="Self.Territory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Territory">
+              <PropertyRef Name="AssignedPublisherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Territory_AspNetUsers1">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="Territory" Type="Self.Territory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Territory">
+              <PropertyRef Name="LastCheckedInBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Territory_ToCongregation">
+          <End Role="Congregation" Type="Self.Congregation" Multiplicity="1" />
+          <End Role="Territory" Type="Self.Territory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Congregation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Territory">
+              <PropertyRef Name="CongregationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Territory_ToType">
+          <End Role="TerritoryType" Type="Self.TerritoryType" Multiplicity="1" />
+          <End Role="Territory" Type="Self.Territory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TerritoryType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Territory">
+              <PropertyRef Name="Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TerritoryBound_Territory">
+          <End Role="Territory" Type="Self.Territory" Multiplicity="1" />
+          <End Role="TerritoryBound" Type="Self.TerritoryBound" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Territory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TerritoryBound">
+              <PropertyRef Name="TerritoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TerritoryWebModelStoreContainer">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Congregation" EntityType="Self.Congregation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Door" EntityType="Self.Door" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DoorCode" EntityType="Self.DoorCode" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Language" EntityType="Self.Language" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PublisherType" EntityType="Self.PublisherType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Territory" EntityType="Self.Territory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TerritoryBound" EntityType="Self.TerritoryBound" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TerritoryType" EntityType="Self.TerritoryType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="URLMinimizeStore" EntityType="Self.URLMinimizeStore" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AspNetUsers_Congregation" Association="Self.FK_AspNetUsers_Congregation">
+            <End Role="Congregation" EntitySet="Congregation" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AspNetUsers_PublisherType" Association="Self.FK_AspNetUsers_PublisherType">
+            <End Role="PublisherType" EntitySet="PublisherType" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Door_ToDoorCode" Association="Self.FK_Door_ToDoorCode">
+            <End Role="DoorCode" EntitySet="DoorCode" />
+            <End Role="Door" EntitySet="Door" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Door_ToLanguage" Association="Self.FK_Door_ToLanguage">
+            <End Role="Language" EntitySet="Language" />
+            <End Role="Door" EntitySet="Door" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Door_ToTerritory" Association="Self.FK_Door_ToTerritory">
+            <End Role="Territory" EntitySet="Territory" />
+            <End Role="Door" EntitySet="Door" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DoorCode_Congregation" Association="Self.FK_DoorCode_Congregation">
+            <End Role="Congregation" EntitySet="Congregation" />
+            <End Role="DoorCode" EntitySet="DoorCode" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Language_Congregation" Association="Self.FK_Language_Congregation">
+            <End Role="Congregation" EntitySet="Congregation" />
+            <End Role="Language" EntitySet="Language" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Territory_AspNetUsers" Association="Self.FK_Territory_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Territory" EntitySet="Territory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Territory_AspNetUsers1" Association="Self.FK_Territory_AspNetUsers1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Territory" EntitySet="Territory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Territory_ToCongregation" Association="Self.FK_Territory_ToCongregation">
+            <End Role="Congregation" EntitySet="Congregation" />
+            <End Role="Territory" EntitySet="Territory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Territory_ToType" Association="Self.FK_Territory_ToType">
+            <End Role="TerritoryType" EntitySet="TerritoryType" />
+            <End Role="Territory" EntitySet="Territory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TerritoryBound_Territory" Association="Self.FK_TerritoryBound_Territory">
+            <End Role="Territory" EntitySet="Territory" />
+            <End Role="TerritoryBound" EntitySet="TerritoryBound" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TerritoryWebModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Congregation">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Territories" Relationship="TerritoryWebModel.FK_Territory_ToCongregation" FromRole="Congregation" ToRole="Territory" />
+          <NavigationProperty Name="AspNetUsers" Relationship="TerritoryWebModel.FK_AspNetUsers_Congregation" FromRole="Congregation" ToRole="AspNetUser" />
+          <NavigationProperty Name="Languages" Relationship="TerritoryWebModel.FK_Language_Congregation" FromRole="Congregation" ToRole="Language" />
+          <NavigationProperty Name="DoorCodes" Relationship="TerritoryWebModel.FK_DoorCode_Congregation" FromRole="Congregation" ToRole="DoorCode" />
+        </EntityType>
+        <EntityType Name="DoorCode">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Doors" Relationship="TerritoryWebModel.FK_Door_ToDoorCode" FromRole="DoorCode" ToRole="Door" />
+          <Property Name="CongregationID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Congregation" Relationship="TerritoryWebModel.FK_DoorCode_Congregation" FromRole="DoorCode" ToRole="Congregation" />
+        </EntityType>
+        <EntityType Name="TerritoryType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Territories" Relationship="TerritoryWebModel.FK_Territory_ToType" FromRole="TerritoryType" ToRole="Territory" />
+        </EntityType>
+        <EntityContainer Name="TerritoryWebEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Congregations" EntityType="Self.Congregation" />
+          <EntitySet Name="DoorCodes" EntityType="Self.DoorCode" />
+          <EntitySet Name="TerritoryTypes" EntityType="Self.TerritoryType" />
+          <EntitySet Name="TerritoryBounds" EntityType="TerritoryWebModel.TerritoryBound" />
+          <EntitySet Name="Territories" EntityType="TerritoryWebModel.Territory" />
+          <AssociationSet Name="FK_Territory_ToCongregation" Association="TerritoryWebModel.FK_Territory_ToCongregation">
+            <End Role="Congregation" EntitySet="Congregations" />
+            <End Role="Territory" EntitySet="Territories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Territory_ToType" Association="TerritoryWebModel.FK_Territory_ToType">
+            <End Role="TerritoryType" EntitySet="TerritoryTypes" />
+            <End Role="Territory" EntitySet="Territories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TerritoryBound_Territory" Association="TerritoryWebModel.FK_TerritoryBound_Territory">
+            <End Role="Territory" EntitySet="Territories" />
+            <End Role="TerritoryBound" EntitySet="TerritoryBounds" />
+          </AssociationSet>
+          <EntitySet Name="AspNetUserRoles" EntityType="TerritoryWebModel.AspNetUserRole" />
+          <EntitySet Name="AspNetUsers" EntityType="TerritoryWebModel.AspNetUser" />
+          <EntitySet Name="PublisherTypes" EntityType="TerritoryWebModel.PublisherType" />
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="TerritoryWebModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserRole" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AspNetUsers_Congregation" Association="TerritoryWebModel.FK_AspNetUsers_Congregation">
+            <End Role="Congregation" EntitySet="Congregations" />
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AspNetUsers_PublisherType" Association="TerritoryWebModel.FK_AspNetUsers_PublisherType">
+            <End Role="PublisherType" EntitySet="PublisherTypes" />
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Territory_AspNetUsers" Association="TerritoryWebModel.FK_Territory_AspNetUsers">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Territory" EntitySet="Territories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Territory_AspNetUsers1" Association="TerritoryWebModel.FK_Territory_AspNetUsers1">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Territory" EntitySet="Territories" />
+          </AssociationSet>
+          <EntitySet Name="AspNetRoles" EntityType="TerritoryWebModel.AspNetRole" />
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="TerritoryWebModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRole" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRole" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <EntitySet Name="Doors" EntityType="TerritoryWebModel.Door" />
+          <AssociationSet Name="FK_Door_ToDoorCode" Association="TerritoryWebModel.FK_Door_ToDoorCode">
+            <End Role="DoorCode" EntitySet="DoorCodes" />
+            <End Role="Door" EntitySet="Doors" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Door_ToTerritory" Association="TerritoryWebModel.FK_Door_ToTerritory">
+            <End Role="Territory" EntitySet="Territories" />
+            <End Role="Door" EntitySet="Doors" />
+          </AssociationSet>
+          <EntitySet Name="URLMinimizeStores" EntityType="TerritoryWebModel.URLMinimizeStore" />
+          <EntitySet Name="Languages" EntityType="TerritoryWebModel.Language" />
+          <AssociationSet Name="FK_Door_ToLanguage" Association="TerritoryWebModel.FK_Door_ToLanguage">
+            <End Role="Language" EntitySet="Languages" />
+            <End Role="Door" EntitySet="Doors" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Language_Congregation" Association="TerritoryWebModel.FK_Language_Congregation">
+            <End Role="Congregation" EntitySet="Congregations" />
+            <End Role="Language" EntitySet="Languages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DoorCode_Congregation" Association="TerritoryWebModel.FK_DoorCode_Congregation">
+            <End Role="Congregation" EntitySet="Congregations" />
+            <End Role="DoorCode" EntitySet="DoorCodes" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="TerritoryBound">
+          <Key>
+            <PropertyRef Name="BoundaryID" />
+          </Key>
+          <Property Name="BoundaryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TerritoryID" Type="Int32" Nullable="false" />
+          <Property Name="GeoLat" Type="Decimal" Nullable="false" Precision="9" Scale="6" />
+          <Property Name="GeoLong" Type="Decimal" Nullable="false" Precision="9" Scale="6" />
+          <NavigationProperty Name="Territory" Relationship="TerritoryWebModel.FK_TerritoryBound_Territory" FromRole="TerritoryBound" ToRole="Territory" />
+        </EntityType>
+        <EntityType Name="Territory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TerritoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CongregationID" Type="Int32" Nullable="false" />
+          <Property Name="AssignedPublisherID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="AddedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Added" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Modified" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CheckedOut" Type="DateTime" Precision="3" />
+          <Property Name="CheckedIn" Type="DateTime" Precision="3" />
+          <Property Name="LastCheckedInBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Congregation" Relationship="TerritoryWebModel.FK_Territory_ToCongregation" FromRole="Territory" ToRole="Congregation" />
+          <NavigationProperty Name="TerritoryType" Relationship="TerritoryWebModel.FK_Territory_ToType" FromRole="Territory" ToRole="TerritoryType" />
+          <NavigationProperty Name="TerritoryBounds" Relationship="TerritoryWebModel.FK_TerritoryBound_Territory" FromRole="Territory" ToRole="TerritoryBound" />
+          <NavigationProperty Name="AssignedUser" Relationship="TerritoryWebModel.FK_Territory_AspNetUsers" FromRole="Territory" ToRole="AspNetUser" />
+          <NavigationProperty Name="LastCheckedInUser" Relationship="TerritoryWebModel.FK_Territory_AspNetUsers1" FromRole="Territory" ToRole="AspNetUser" />
+          <NavigationProperty Name="Doors" Relationship="TerritoryWebModel.FK_Door_ToTerritory" FromRole="Territory" ToRole="Door" />
+        </EntityType>
+        <Association Name="FK_Territory_ToCongregation">
+          <End Type="TerritoryWebModel.Congregation" Role="Congregation" Multiplicity="1" />
+          <End Type="TerritoryWebModel.Territory" Role="Territory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Congregation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Territory">
+              <PropertyRef Name="CongregationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Territory_ToType">
+          <End Type="TerritoryWebModel.TerritoryType" Role="TerritoryType" Multiplicity="1" />
+          <End Type="TerritoryWebModel.Territory" Role="Territory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TerritoryType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Territory">
+              <PropertyRef Name="Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TerritoryBound_Territory">
+          <End Type="TerritoryWebModel.Territory" Role="Territory" Multiplicity="1" />
+          <End Type="TerritoryWebModel.TerritoryBound" Role="TerritoryBound" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Territory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TerritoryBound">
+              <PropertyRef Name="TerritoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AspNetUserRole">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="RoleId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Discriminator" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Role_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationUser_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="TerritoryWebModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="AspNetUserRole" ToRole="AspNetUser" />
+          <NavigationProperty Name="AspNetRole" Relationship="TerritoryWebModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="AspNetUserRole" ToRole="AspNetRole" />
+        </EntityType>
+        <EntityType Name="AspNetUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="CongregationID" Type="Int32" />
+          <Property Name="Language" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CellPhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Address1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Address2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TypeID" Type="Int32" />
+          <NavigationProperty Name="AspNetUserRoles" Relationship="TerritoryWebModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserRole" />
+          <NavigationProperty Name="Congregation" Relationship="TerritoryWebModel.FK_AspNetUsers_Congregation" FromRole="AspNetUser" ToRole="Congregation" />
+          <NavigationProperty Name="PublisherType" Relationship="TerritoryWebModel.FK_AspNetUsers_PublisherType" FromRole="AspNetUser" ToRole="PublisherType" />
+          <NavigationProperty Name="Territories" Relationship="TerritoryWebModel.FK_Territory_AspNetUsers" FromRole="AspNetUser" ToRole="Territory" />
+          <NavigationProperty Name="Territories1" Relationship="TerritoryWebModel.FK_Territory_AspNetUsers1" FromRole="AspNetUser" ToRole="Territory" />
+          <Property Name="IsDisabled" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PublisherType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AspNetUsers" Relationship="TerritoryWebModel.FK_AspNetUsers_PublisherType" FromRole="PublisherType" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Type="TerritoryWebModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="TerritoryWebModel.AspNetUserRole" Role="AspNetUserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRole">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AspNetUsers_Congregation">
+          <End Type="TerritoryWebModel.Congregation" Role="Congregation" Multiplicity="0..1" />
+          <End Type="TerritoryWebModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Congregation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUser">
+              <PropertyRef Name="CongregationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AspNetUsers_PublisherType">
+          <End Type="TerritoryWebModel.PublisherType" Role="PublisherType" Multiplicity="0..1" />
+          <End Type="TerritoryWebModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PublisherType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUser">
+              <PropertyRef Name="TypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Territory_AspNetUsers">
+          <End Type="TerritoryWebModel.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
+          <End Type="TerritoryWebModel.Territory" Role="Territory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Territory">
+              <PropertyRef Name="AssignedPublisherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Territory_AspNetUsers1">
+          <End Type="TerritoryWebModel.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
+          <End Type="TerritoryWebModel.Territory" Role="Territory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Territory">
+              <PropertyRef Name="LastCheckedInBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AspNetRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Discriminator" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUserRoles" Relationship="TerritoryWebModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="AspNetRole" ToRole="AspNetUserRole" />
+        </EntityType>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Type="TerritoryWebModel.AspNetRole" Role="AspNetRole" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="TerritoryWebModel.AspNetUserRole" Role="AspNetUserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRole">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRole">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Door">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TerritoryID" Type="Int32" Nullable="false" />
+          <Property Name="Address" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Street" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Apartment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LanguageID" Type="Int32" />
+          <Property Name="CodeID" Type="Int32" />
+          <Property Name="Comments" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Telephone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PostalCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="GeoLat" Type="Decimal" Precision="9" Scale="6" />
+          <Property Name="GeoLong" Type="Decimal" Precision="9" Scale="6" />
+          <Property Name="AddedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Added" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Modified" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="DoorCode" Relationship="TerritoryWebModel.FK_Door_ToDoorCode" FromRole="Door" ToRole="DoorCode" />
+          <NavigationProperty Name="Territory" Relationship="TerritoryWebModel.FK_Door_ToTerritory" FromRole="Door" ToRole="Territory" />
+          <NavigationProperty Name="Language" Relationship="TerritoryWebModel.FK_Door_ToLanguage" FromRole="Door" ToRole="Language" />
+        </EntityType>
+        <Association Name="FK_Door_ToDoorCode">
+          <End Type="TerritoryWebModel.DoorCode" Role="DoorCode" Multiplicity="0..1" />
+          <End Type="TerritoryWebModel.Door" Role="Door" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DoorCode">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Door">
+              <PropertyRef Name="CodeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Door_ToTerritory">
+          <End Type="TerritoryWebModel.Territory" Role="Territory" Multiplicity="1" />
+          <End Type="TerritoryWebModel.Door" Role="Door" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Territory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Door">
+              <PropertyRef Name="TerritoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="URLMinimizeStore">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="shortURL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="longURL" Type="String" Nullable="false" MaxLength="1500" FixedLength="false" Unicode="false" />
+          <Property Name="dateCreated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="used" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Language">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CongregationID" Type="Int32" />
+          <NavigationProperty Name="Doors" Relationship="TerritoryWebModel.FK_Door_ToLanguage" FromRole="Language" ToRole="Door" />
+          <NavigationProperty Name="Congregation" Relationship="TerritoryWebModel.FK_Language_Congregation" FromRole="Language" ToRole="Congregation" />
+        </EntityType>
+        <Association Name="FK_Door_ToLanguage">
+          <End Type="TerritoryWebModel.Language" Role="Language" Multiplicity="0..1" />
+          <End Type="TerritoryWebModel.Door" Role="Door" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Language">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Door">
+              <PropertyRef Name="LanguageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Language_Congregation">
+          <End Type="TerritoryWebModel.Congregation" Role="Congregation" Multiplicity="0..1" />
+          <End Type="TerritoryWebModel.Language" Role="Language" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Congregation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Language">
+              <PropertyRef Name="CongregationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DoorCode_Congregation">
+          <End Type="TerritoryWebModel.Congregation" Role="Congregation" Multiplicity="1" />
+          <End Type="TerritoryWebModel.DoorCode" Role="DoorCode" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Congregation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DoorCode">
+              <PropertyRef Name="CongregationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TerritoryWebModelStoreContainer" CdmEntityContainer="TerritoryWebEntities">
+          <EntitySetMapping Name="Congregations">
+            <EntityTypeMapping TypeName="TerritoryWebModel.Congregation">
+              <MappingFragment StoreEntitySet="Congregation">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DoorCodes">
+            <EntityTypeMapping TypeName="TerritoryWebModel.DoorCode">
+              <MappingFragment StoreEntitySet="DoorCode">
+                <ScalarProperty Name="CongregationID" ColumnName="CongregationID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TerritoryTypes">
+            <EntityTypeMapping TypeName="TerritoryWebModel.TerritoryType">
+              <MappingFragment StoreEntitySet="TerritoryType">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TerritoryBounds">
+            <EntityTypeMapping TypeName="TerritoryWebModel.TerritoryBound">
+              <MappingFragment StoreEntitySet="TerritoryBound">
+                <ScalarProperty Name="GeoLong" ColumnName="GeoLong" />
+                <ScalarProperty Name="GeoLat" ColumnName="GeoLat" />
+                <ScalarProperty Name="TerritoryID" ColumnName="TerritoryID" />
+                <ScalarProperty Name="BoundaryID" ColumnName="BoundaryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Territories">
+            <EntityTypeMapping TypeName="TerritoryWebModel.Territory">
+              <MappingFragment StoreEntitySet="Territory">
+                <ScalarProperty Name="LastCheckedInBy" ColumnName="LastCheckedInBy" />
+                <ScalarProperty Name="CheckedIn" ColumnName="CheckedIn" />
+                <ScalarProperty Name="CheckedOut" ColumnName="CheckedOut" />
+                <ScalarProperty Name="Modified" ColumnName="Modified" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="Added" ColumnName="Added" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="AssignedPublisherID" ColumnName="AssignedPublisherID" />
+                <ScalarProperty Name="CongregationID" ColumnName="CongregationID" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="TerritoryName" ColumnName="TerritoryName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserRoles">
+            <EntityTypeMapping TypeName="TerritoryWebModel.AspNetUserRole">
+              <MappingFragment StoreEntitySet="AspNetUserRoles">
+                <ScalarProperty Name="ApplicationUser_Id" ColumnName="ApplicationUser_Id" />
+                <ScalarProperty Name="Role_Id" ColumnName="Role_Id" />
+                <ScalarProperty Name="Discriminator" ColumnName="Discriminator" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="TerritoryWebModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="IsDisabled" ColumnName="IsDisabled" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="Address2" ColumnName="Address2" />
+                <ScalarProperty Name="Address1" ColumnName="Address1" />
+                <ScalarProperty Name="CellPhone" ColumnName="CellPhone" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Language" ColumnName="Language" />
+                <ScalarProperty Name="CongregationID" ColumnName="CongregationID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PublisherTypes">
+            <EntityTypeMapping TypeName="TerritoryWebModel.PublisherType">
+              <MappingFragment StoreEntitySet="PublisherType">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetRoles">
+            <EntityTypeMapping TypeName="TerritoryWebModel.AspNetRole">
+              <MappingFragment StoreEntitySet="AspNetRoles">
+                <ScalarProperty Name="Discriminator" ColumnName="Discriminator" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Doors">
+            <EntityTypeMapping TypeName="TerritoryWebModel.Door">
+              <MappingFragment StoreEntitySet="Door">
+                <ScalarProperty Name="Modified" ColumnName="Modified" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="Added" ColumnName="Added" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="GeoLong" ColumnName="GeoLong" />
+                <ScalarProperty Name="GeoLat" ColumnName="GeoLat" />
+                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+                <ScalarProperty Name="Telephone" ColumnName="Telephone" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="CodeID" ColumnName="CodeID" />
+                <ScalarProperty Name="LanguageID" ColumnName="LanguageID" />
+                <ScalarProperty Name="Apartment" ColumnName="Apartment" />
+                <ScalarProperty Name="Street" ColumnName="Street" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="TerritoryID" ColumnName="TerritoryID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="URLMinimizeStores">
+            <EntityTypeMapping TypeName="TerritoryWebModel.URLMinimizeStore">
+              <MappingFragment StoreEntitySet="URLMinimizeStore">
+                <ScalarProperty Name="used" ColumnName="used" />
+                <ScalarProperty Name="dateCreated" ColumnName="dateCreated" />
+                <ScalarProperty Name="longURL" ColumnName="longURL" />
+                <ScalarProperty Name="shortURL" ColumnName="shortURL" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Languages">
+            <EntityTypeMapping TypeName="TerritoryWebModel.Language">
+              <MappingFragment StoreEntitySet="Language">
+                <ScalarProperty Name="CongregationID" ColumnName="CongregationID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

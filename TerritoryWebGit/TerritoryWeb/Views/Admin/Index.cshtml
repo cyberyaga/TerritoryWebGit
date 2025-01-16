@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<ol class="breadcrumb">
+    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <li class="active">Admin Page</li>
+</ol>
+<h2>Admin Page</h2>
+
+<div class="row">
+    <div class="col-xs-4">@Html.ActionLink("Congregations", "Index", "Congregation", null, new { @class = "btn btn-default" })</div>
+    <div class="col-xs-4">@Html.ActionLink("Users", "ManageUsers", "Admin", null, new { @class = "btn btn-default" })</div>
+    <div class="col-xs-4">@Html.ActionLink("Languages", "Index", "Language", null, new { @class = "btn btn-default" })</div>
+</div>
+<div class="row">
+    <div class="col-xs-4"></div>
+    <div class="col-xs-4"></div>
+    <div class="col-xs-4">&nbsp;</div>
+</div>
+<div class="row">
+    <div class="col-xs-4"></div>
+    <div class="col-xs-4"></div>
+    <div class="col-xs-4">@Html.ActionLink("Door Codes", "Index", "DoorCode", null, new { @class = "btn btn-default" })</div>
+</div>
